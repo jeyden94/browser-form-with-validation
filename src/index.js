@@ -4,33 +4,52 @@ if (process.env.NODE_ENV !== "production") {
   console.log("Looks like we are in development mode!");
 }
 
-const form = document.querySelector("form");
-const email = document.getElementById("mail");
-const error = document.getElementById("error");
+const form = document.querySelector("form")
 
-// Regular expression for email validation as per HTML specification
-const emailRegExp = /^[\w.!#$%&'*+/=?^`{|}~-]+@[a-z\d-]+(?:\.[a-z\d-]+)*$/i;
+const email = document.getElementById("email")
+const emailError = document.getElementById("email-error")
 
-// Check if the email is valid
+const emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const isValidInput = (input, regExp) => {
+  const validity = input.value.length !== 0 && regExp.test(input.value);
+  return validity;
+};
+
+const setInputClass = (input, isValid) => {
+  input.className = isValid ? "valid" : "invalid";
+};
+
+const updateError = (input, error, isValid) => {
+  if (isValid) {
+    error.textContent = "";
+    error.removeAttribute("class");
+  } else {
+    if (input === email) {
+      error.textContent = "I expect an email, darling!";
+      error.setAttribute("class", "active");
+    }
+  }
+};
+
+const handleInput = (input, error, regExp) => {
+  const validity = isValidInput(input, regExp);
+  setInputClass(input, validity);
+  updateError(input, error, validity);
+};
+
+const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const emailValidity = isValidInput(email, emailRegExp);
+  setInputClass(email, emailValidity);
+  updateError(email, emailError, emailValidity);
+};
+
+const emailValidity = isValidInput(email, emailRegExp);
+setInputClass(email, emailValidity);
 
 
-// Update email input class based on validity
+email.addEventListener("input", () => handleInput(email, emailError, emailRegExp));
 
-
-// Update error message and visibility
-
-
-// Handle input event to update email validity
-
-
-// Handle form submission to show error if email is invalid
-
-
-// Now we can rebuild our validation constraint
-// Because we do not rely on CSS pseudo-class, we have to
-// explicitly set the valid/invalid class on our email field
-
-
-// This defines what happens when the user types in the field
-
-// This defines what happens when the user tries to submit the data
+form.addEventListener("submit", handleSubmit);

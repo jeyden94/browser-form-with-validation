@@ -1,34 +1,20 @@
 body {
-  background-color: rebeccapurple;
-}
-
-body {
   font: 1em sans-serif;
   width: 200px;
   padding: 0;
   margin: 0 auto;
 }
 
+form {
+  max-width: 200px;
+}
+
 p * {
   display: block;
 }
 
-input[type="email"] {
+input {
   appearance: none;
-
-  width: 100%;
-  border: 1px solid #333333;
-  margin: 0;
-
-  font-family: inherit;
-  font-size: 90%;
-
-  box-sizing: border-box;
-}
-
-input[type="text"] {
-  appearance: none;
-
   width: 100%;
   border: 1px solid #333333;
   margin: 0;
@@ -40,28 +26,27 @@ input[type="text"] {
 }
 
 /* invalid fields */
-input:invalid {
-  border-color: #990000;
+input.invalid {
+  border: 2px solid #990000;
   background-color: #ffdddd;
 }
 
-input:focus:invalid {
+input:focus.invalid {
   outline: none;
+  /* make sure keyboard-only users see a change when focusing */
+  border-style: dashed;
 }
 
-/* error message styles */
-.error {
+/* error messages */
+#error {
   width: 100%;
-  padding: 0;
-
   font-size: 80%;
   color: white;
   background-color: #990000;
   border-radius: 0 0 5px 5px;
-
   box-sizing: border-box;
 }
 
-.error.active {
-  padding: 0.3em;
+.active {
+  padding: 0.3rem;
 }
