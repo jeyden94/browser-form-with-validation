@@ -11,9 +11,24 @@ const form = document.querySelector("form")
 const email = document.getElementById("email")
 const emailError = document.getElementById("email-error")
 
+const country = document.getElementById("country")
+const countryError = document.getElementById("country-error")
+
+const postalCode = document.getElementById("postal-code")
+const postalCodeError = document.getElementById("postal-code-error")
+
+const password = document.getElementById("password")
+const passwordError = document.getElementById("password-error")
+
+const confirmPassword = document.getElementById("confirm-password")
+const confirmPasswordError = document.getElementById("confirm-password-error")
 
 //-- Add Regular Expression Variables for Each Input --//
 const emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const countryRegExp = /^[a-zA-Z\s\-']+$/
+const postalCodeRegExp = /^[A-Za-z0-9\s\-]{3,10}$/
+const strongPasswordRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
  
 //-- Dynamically Update Input Validity and Generate Error Messages --//
 const isValidInput = (input, regExp) => {
@@ -31,7 +46,19 @@ const updateError = (thisInput, thisError, thisValidityStatus) => {
     thisError.removeAttribute("class");
   } else {
     if (thisInput === email) {
-      thisError.textContent = "I expect an email, darling!";
+      thisError.textContent = 'Please enter a valid email address (e.g., "user@example.com").';
+      thisError.setAttribute("class", "active");
+    } else if (thisInput === country) {
+      thisError.textContent = 'Please enter a valid country name using only letters, spaces, hyphens, and apostrophes (e.g., "United States", "United Kingdom", "Côte d\'Ivoire").';
+      thisError.setAttribute("class", "active");
+    } else if (thisInput === postalCode) {
+      thisError.textContent = 'Please enter a valid postal code using only letters, numbers, spaces, and hyphens (3-10 characters long).';
+      thisError.setAttribute("class", "active");
+    } else if (thisInput === password) {
+      thisError.textContent = 'Password must be at least 8 characters long and include: one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).';
+      thisError.setAttribute("class", "active");
+    } else if (thisInput === confirmPassword) {
+      thisError.textContent = 'Passwords do not match.';
       thisError.setAttribute("class", "active");
     }
   }
@@ -43,6 +70,22 @@ const handleInput = (inputValue, errorMessage, inputRegExp) => {
   updateError(inputValue, errorMessage, validity);
 };
 
+//-- Separate Handlers for Password Confirmation --//
+
+const isSecondPasswordValid = (input, firstPasswordValue) => {
+  const validity = input.value.length !== 0 && input.value === firstPasswordValue;
+  return validity;
+};
+
+const setConfirmPasswordClass = (confirmPasswordDiv, validityStatus) => {
+  confirmPasswordDiv.className = validityStatus ? "valid" : "invalid";
+};
+
+const handleConfirmPasswordInput = (inputValue, errorMessage) => {
+  const validity = isSecondPasswordValid(inputValue);
+  setConfirmPasswordClass(inputValue, validity);
+  updateError(inputValue, errorMessage, validity);
+};
 
 //-- Form-Level Event Handler That Considers All Inputs --//
 const handleSubmit = (event) => {
@@ -57,7 +100,23 @@ const handleSubmit = (event) => {
 const emailValidity = isValidInput(email, emailRegExp);
 setInputClass(email, emailValidity);
 
+const countryValidity = isValidInput(country, countryRegExp);
+setInputClass(country, countryValidity);
+
+const postalCodeValidity = isValidInput(postalCode, postalCodeRegExp);
+setInputClass(postalCode, postalCodeValidity);
+
+const passwordValidity = isValidInput(password, strongPasswordRegExp);
+setInputClass(password, passwordValidity);
+
+// const confirmPasswordValidity = isValidInput(confirmPassword, emailRegExp);
+// setInputClass(confirmPassword, password.value);
+
 //-- Add Event Listeners for Each Input --//
 email.addEventListener("input", () => handleInput(email, emailError, emailRegExp));
+country.addEventListener("input", () => handleInput(country, countryError, countryRegExp));
+postalCode.addEventListener("input", () => handleInput(postalCode, postalCodeError, postalCodeRegExp));
+password.addEventListener("input", () => handleInput(password, passwordError, strongPasswordRegExp));
+confirmPassword.addEventListener("input", () => handleConfirmPasswordInput(confirmPassword, confirmPasswordError));
 
 form.addEventListener("submit", handleSubmit);
