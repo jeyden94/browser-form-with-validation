@@ -26,9 +26,8 @@ const confirmPasswordError = document.getElementById("confirm-password-error")
 //-- Add Regular Expression Variables for Each Input --//
 const emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const countryRegExp = /^[a-zA-Z\s\-']+$/
-const postalCodeRegExp = /^[A-Za-z0-9\s\-]{3,10}$/
+const postalCodeRegExp = /^[\d\s\-]{3,10}$/
 const strongPasswordRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-
  
 //-- Dynamically Update Input Validity and Generate Error Messages --//
 const isValidInput = (input, regExp) => {
@@ -64,10 +63,10 @@ const updateError = (thisInput, thisError, thisValidityStatus) => {
   }
 };
 
-const handleInput = (inputValue, errorMessage, inputRegExp) => {
-  const validity = isValidInput(inputValue, inputRegExp);
-  setInputClass(inputValue, validity);
-  updateError(inputValue, errorMessage, validity);
+const handleInput = (inputDiv, errorMessage, inputRegExp) => {
+  const validity = isValidInput(inputDiv, inputRegExp);
+  setInputClass(inputDiv, validity);
+  updateError(inputDiv, errorMessage, validity);
 };
 
 //-- Separate Handlers for Password Confirmation --//
@@ -81,10 +80,10 @@ const setConfirmPasswordClass = (confirmPasswordDiv, validityStatus) => {
   confirmPasswordDiv.className = validityStatus ? "valid" : "invalid";
 };
 
-const handleConfirmPasswordInput = (inputValue, errorMessage) => {
-  const validity = isSecondPasswordValid(inputValue);
-  setConfirmPasswordClass(inputValue, validity);
-  updateError(inputValue, errorMessage, validity);
+const handleConfirmPasswordInput = (inputDiv, errorMessage) => {
+  const validity = isSecondPasswordValid(inputDiv, password.value);
+  setConfirmPasswordClass(inputDiv, validity);
+  updateError(inputDiv, errorMessage, validity);
 };
 
 //-- Form-Level Event Handler That Considers All Inputs --//
@@ -94,6 +93,23 @@ const handleSubmit = (event) => {
   const emailValidity = isValidInput(email, emailRegExp);
   setInputClass(email, emailValidity);
   updateError(email, emailError, emailValidity);
+
+  const countryValidity = isValidInput(country, countryRegExp);
+  setInputClass(country, countryValidity);
+  updateError(country, countryError, countryValidity);
+
+  const postalCodeValidity = isValidInput(postalCode, postalCodeRegExp);
+  setInputClass(postalCode, postalCodeValidity);
+  updateError(postalCode, postalCodeError, postalCodeValidity);
+
+  const passwordValidity = isValidInput(password, strongPasswordRegExp);
+  setInputClass(password, passwordValidity);
+  updateError(password, passwordError, passwordValidity);
+
+  const confirmPasswordValidity = isSecondPasswordValid(confirmPassword, password.value);
+  setConfirmPasswordClass(confirmPassword, confirmPasswordValidity);
+  updateError(confirmPassword, emailError, emailValidity);
+
 };
 
 //-- Initialize Each Input's Validity --//
@@ -109,14 +125,17 @@ setInputClass(postalCode, postalCodeValidity);
 const passwordValidity = isValidInput(password, strongPasswordRegExp);
 setInputClass(password, passwordValidity);
 
-// const confirmPasswordValidity = isValidInput(confirmPassword, emailRegExp);
-// setInputClass(confirmPassword, password.value);
+const confirmPasswordValidity = isSecondPasswordValid(confirmPassword, password.value);
+setConfirmPasswordClass(confirmPassword, confirmPasswordValidity);
 
 //-- Add Event Listeners for Each Input --//
 email.addEventListener("input", () => handleInput(email, emailError, emailRegExp));
 country.addEventListener("input", () => handleInput(country, countryError, countryRegExp));
 postalCode.addEventListener("input", () => handleInput(postalCode, postalCodeError, postalCodeRegExp));
-password.addEventListener("input", () => handleInput(password, passwordError, strongPasswordRegExp));
+password.addEventListener("input", () => {
+  handleInput(password, passwordError, strongPasswordRegExp);
+  handleConfirmPasswordInput(confirmPassword, confirmPasswordError);
+});
 confirmPassword.addEventListener("input", () => handleConfirmPasswordInput(confirmPassword, confirmPasswordError));
 
 form.addEventListener("submit", handleSubmit);

@@ -38,7 +38,11 @@ input:focus.invalid {
 }
 
 /* error messages */
-#email-error {
+#email-error,
+#country-error,
+#postal-code-error,
+#password-error,
+#confirm-password-error {
   width: 100%;
   font-size: 80%;
   color: white;
