@@ -129,13 +129,37 @@ const confirmPasswordValidity = isSecondPasswordValid(confirmPassword, password.
 setConfirmPasswordClass(confirmPassword, confirmPasswordValidity);
 
 //-- Add Event Listeners for Each Input --//
-email.addEventListener("input", () => handleInput(email, emailError, emailRegExp));
-country.addEventListener("input", () => handleInput(country, countryError, countryRegExp));
-postalCode.addEventListener("input", () => handleInput(postalCode, postalCodeError, postalCodeRegExp));
-password.addEventListener("input", () => {
-  handleInput(password, passwordError, strongPasswordRegExp);
-  handleConfirmPasswordInput(confirmPassword, confirmPasswordError);
+
+["input", "blur"].forEach(event => {
+  email.addEventListener(event, () => {
+    handleInput(email, emailError, emailRegExp);
+  });
 });
-confirmPassword.addEventListener("input", () => handleConfirmPasswordInput(confirmPassword, confirmPasswordError));
+
+["input", "blur"].forEach(event => {
+  country.addEventListener(event, () => {
+    handleInput(country, countryError, countryRegExp);
+  });
+});
+
+["input", "blur"].forEach(event => {
+  postalCode.addEventListener(event, () => {
+    handleInput(postalCode, postalCodeError, postalCodeRegExp);
+  });
+});
+
+["input", "blur"].forEach(event => {
+  password.addEventListener(event, () => {
+    handleInput(password, passwordError, strongPasswordRegExp);
+    handleConfirmPasswordInput(confirmPassword, confirmPasswordError);
+  });
+});
+
+["input", "blur"].forEach(event => {
+  confirmPassword.addEventListener(event, () => {
+    handleConfirmPasswordInput(confirmPassword, confirmPasswordError);  
+  });
+});
+
 
 form.addEventListener("submit", handleSubmit);
